@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { API_URL } from "../utils/constant";
 
@@ -7,7 +7,8 @@ const useFetchJobs = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchJobs = async () => {
+  const fetchJobs = useCallback(async () => {
+    setLoading(true); // Set loading to true for refetching
     try {
       const response = await axios.get(`${API_URL}/get-jobs`, {
         headers: {
@@ -16,18 +17,20 @@ const useFetchJobs = () => {
       });
 
       setJobs(response.data);
+      setError(null); // Reset error on successful fetch
     } catch (err) {
       setError(err.message || "An error occurred");
     } finally {
       setLoading(false);
     }
-  };
+  }, []); // Using useCallback to avoid re-creating the function unnecessarily
 
   useEffect(() => {
     fetchJobs();
-  }, []);
+  }, [fetchJobs]);
 
-  return { jobs, loading, error };
+  // Return jobs, loading, error, and the refetch function
+  return { jobs, loading, error, refetch: fetchJobs };
 };
 
 export default useFetchJobs;

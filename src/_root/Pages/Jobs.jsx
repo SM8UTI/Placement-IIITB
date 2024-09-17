@@ -26,7 +26,7 @@ import toast from "react-hot-toast";
 import OTPInput from "react-otp-input";
 
 const Jobs = () => {
-  const { jobs, loading, error: isError } = useFetchJobs();
+  const { jobs, loading, error: isError, refetch } = useFetchJobs();
   const [open, setOpen] = useState(false);
 
   const [jobData, setJobData] = useState({
@@ -85,6 +85,7 @@ const Jobs = () => {
       setStepsJob(1);
       setPostJobModal(false);
       toast.success(res.data.message || "Job posted successfully");
+      refetch();
     } catch (error) {
       console.log(error);
       toast.error(error.response.data.message || "An error occurred");
@@ -414,7 +415,7 @@ const Jobs = () => {
                   "flex flex-row gap-4 justify-center rounded-md flex-wrap"
                 }
                 inputStyle={
-                  "!w-10 sm:!w-14 !h-12 bg-[#191919]/50 text-text text-center rounded-md border border-white/20 focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-white/50 font-primary font-normal text-lg"
+                  "!w-10 sm:!w-14 !h-12 bg-[#191919]/50 text-white text-center rounded-md border border-white/20 focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-white/50 font-primary font-normal text-lg"
                 }
                 renderInput={(props) => <input {...props} />}
                 disabled={jobLoading}
