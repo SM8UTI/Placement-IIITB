@@ -19,7 +19,7 @@ import {
   IconButton,
 } from "@material-tailwind/react";
 import Wrapper from "../layouts/Wrapper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../../utils/constant";
 import toast from "react-hot-toast";
@@ -57,6 +57,7 @@ const Jobs = () => {
   const [otp, setOtp] = useState("");
   const [jobLoading, setJobLoading] = useState(false);
   const [error, setError] = useState("");
+  const [subscriberCount, setSubscriberCount] = useState(0);
 
   const handleOpen = () => {
     setOpen(!open);
@@ -94,6 +95,18 @@ const Jobs = () => {
       setJobLoading(false);
     }
   };
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/`);
+        setSubscriberCount(res.data.subscribers);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchCounts();
+  }, []);
 
   const handleJobPost = async (e) => {
     e.preventDefault();
@@ -204,7 +217,9 @@ const Jobs = () => {
               <div className="flex flex-row items-center gap-2 text-sm">
                 <RiMailLine className="text-lg" />
                 {/* todo  */}
-                <span className="text-white/90">100+ Subscribers</span>
+                <span className="text-white/90">
+                  {subscriberCount || "00"} Subscribers
+                </span>
               </div>
             </div>
           </Wrapper>
